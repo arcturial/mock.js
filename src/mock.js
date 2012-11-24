@@ -1,3 +1,34 @@
+/**
+ * @copyright Copyright© 2012 Chris Brand
+ * @see http://www.gnu.org/licenses
+ * @license GNU General Public License
+ *
+ * -------------------------------------------------------------------
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.
+ * -------------------------------------------------------------------
+ */
+
+
+/**
+ * Mock.js is a Javascript resource library that allows the user to
+ * 'fake' certain Javascript objects in order to test their functionality
+ * properly by assessing the flow a Javascript function execution
+ *
+ * @author Chris Brand
+ * @date 2012-11-24
+ * @license GNU General Public License
+ */
 (function()
 {   
     __hasProp = {}.hasOwnProperty,
@@ -14,6 +45,10 @@
         return child; 
     };
 
+    /**
+     * MockedReplica is a javascript object containing
+     * our basic 'mock' test calls.
+     */
     MockedReplica = {
         mock_called_methods: {},
         mock_called: function(method)
@@ -52,10 +87,12 @@
 
                     var function_cont = MockedReplica[key]; // the original function call
 
+                    /* override the function call */
                     MockedReplica[key] = function()
                     {
                         MockedReplica.mock_called_methods[key].called++;
 
+                        /* save arguments used for this function call */
                         $.each(arguments, function(arg_key, arg_value) 
                         { 
                             switch(typeof arg_value)
@@ -76,12 +113,10 @@
                 }
             });
 
-
-            return MockedReplica;
+            return MockedReplica; // return a replica
         }
 
         return Mock;
     })();
-
 
 }).call(this);

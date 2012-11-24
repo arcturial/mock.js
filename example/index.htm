@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mock.js Example</title>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+        <!-- QUnit includes -->
+        <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.10.0.css">
+        <script type="text/javascript" src="http://code.jquery.com/qunit/qunit-1.10.0.js"></script>
+
+        <!-- JQuery -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js" type="text/javascript"></script>     
+
+        <!-- Testable Objects -->
+        <script type="text/javascript" src="example.js"></script>
+
+        <!-- Mock.js -->
+        <script type="text/javascript" src="../src/mock.js"></script>
+    </head>
+    <body>
+
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>        
+
+        <script>
+        
+            test( "test function callMe()", function() {
+
+                expect(3); // expect three assertions
+
+                /**
+                 * Scenario
+                 * --------
+                 * When we call the function callMe(), we expect
+                 * callMeTwo() and callMeThree() to both be called.
+                 */
+
+
+                /**
+                 * Step 1. 
+                 * -------
+                 * First create a mockable object with the functions you
+                 * would like to be mocked.
+                 */
+                var mocked = Mock(new TestObject, ['callMe', 'callMeTwo', 'callMeThree']);
+
+                /**
+                 * Step 2.
+                 * -------
+                 * Call the function you would like to test 
+                 * (this must be part of the mocked list defined above)
+                 */
+                mocked.callMe();
+
+
+                /**
+                 * Step 3.
+                 * -------
+                 * Run the tests
+                 */
+                 
+                equal(mocked.mock_called('callMeThree'), 1, "callMeThree() called once");
+                equal(mocked.mock_called('callMeTwo'), 2, "callMeTwo() called twice");
+
+                /* call deepEqual when comparing arguments */
+                deepEqual(mocked.mock_called_with('callMeTwo'), ['arg1', 'arg2'], "callMeTwo() last called with param [arg1, arg2]");
+            });
+
+        </script>
+    </body>
+</html>
