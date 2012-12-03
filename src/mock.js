@@ -59,6 +59,10 @@
         {
             return this.mock_called_methods[method].args;
         },
+        mock_called_with_real: function(method)
+        {
+            return this.mock_called_methods[method].real_args;
+        },
     };
 
     Mock = (function()
@@ -83,7 +87,7 @@
                
                 if (__hasProp.call(MockedReplica, key) && functions.indexOf(key) > -1 && typeof MockedReplica[key] == 'function')
                 {
-                    MockedReplica.mock_called_methods[key] = {called: 0, args: []};
+                    MockedReplica.mock_called_methods[key] = {called: 0, args: [], real_args: []};
 
                     var function_cont = MockedReplica[key]; // the original function call
 
@@ -106,10 +110,14 @@
                                 default:
                                     MockedReplica.mock_called_methods[key].args.push(arg_value);
                             }
+
+                            MockedReplica.mock_called_methods[key].real_args.push(arg_value);
                         });
 
                         return function_cont.apply(MockedReplica, arguments);
                     };
+
+                    mock[key] = MockedReplica[key]; // morph the original object into mock
                 }
             });
 
