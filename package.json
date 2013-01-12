@@ -12,5 +12,8 @@
     },
     "scripts": {
         "test": "vows ./test/mock.js"
+    },
+    "devDependencies": {
+        "vows": "0.7.x"
     }
 }
