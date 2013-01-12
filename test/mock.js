@@ -13,7 +13,10 @@
  *
  * ===================================================================
  *
- * Test file to ensure Mock.js functionality is working
+ * Test file to ensure Mock.js functionality is working. In order to run this 
+ * test you need to install 'Node.js' and the 'Vows' module.
+ *
+ * - npm install vows
  * 
  * @package Mock.js
  * @author  Chris Brand <chris@cainsvault.com>
