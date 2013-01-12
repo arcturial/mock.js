@@ -88,5 +88,4 @@
 
         return Spy;
     })();
-
 }).call(this);
