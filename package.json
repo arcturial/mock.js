@@ -1,0 +1,16 @@
+{
+    "name": "Mock.js",
+    "version": "0.1.0",
+    "description": "Lightweight Mock Testing For Javascript.",
+    "author": {
+        "name": "Chris Brand",
+        "email": "chris@cainsvault.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/arcturial/mock/js.git"
+    },
+    "scripts": {
+        "test": "vows ./test/mock.js"
+    }
+}

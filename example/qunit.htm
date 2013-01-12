@@ -26,7 +26,7 @@
         
             test( "test function callMe()", function() {
 
-                expect(3); // expect three assertions
+                expect(4); // expect three assertions
 
                 /**
                  * Scenario
@@ -42,7 +42,10 @@
                  * First create a mockable object with the functions you
                  * would like to be mocked.
                  */
-                var mocked = Mock(new TestObject, ['callMe', 'callMeTwo', 'callMeThree']);
+                var object = new TestObject();
+
+                var callMeTwo = Mock.Spy(object, 'callMeTwo');
+                var callMeThree = Mock.Spy(object, 'callMeThree');
 
                 /**
                  * Step 2.
@@ -50,7 +53,7 @@
                  * Call the function you would like to test 
                  * (this must be part of the mocked list defined above)
                  */
-                mocked.callMe();
+                object.callMe();
 
 
                 /**
@@ -59,11 +62,13 @@
                  * Run the tests
                  */
                  
-                equal(mocked.mock_called('callMeThree'), 1, "callMeThree() called once");
-                equal(mocked.mock_called('callMeTwo'), 2, "callMeTwo() called twice");
+                equal(callMeThree.called(), 1, "callMeThree() called once");
+                equal(callMeTwo.called(), 2, "callMeTwo() called twice");
+
+                equal("call two result", callMeTwo.returnedWith(), "callMeTwo() returned with correct response");
 
                 /* call deepEqual when comparing arguments */
-                deepEqual(mocked.mock_called_with('callMeTwo'), ['arg1', 'arg2'], "callMeTwo() last called with param [arg1, arg2]");
+                deepEqual(callMeTwo.calledWith(), ['arg1', 'arg2'], "callMeTwo() last called with param [arg1, arg2]");
             });
 
         </script>

@@ -1,9 +1,6 @@
 /**
- * @copyright Copyright© 2012 Chris Brand
- * @see http://www.gnu.org/licenses
- * @license GNU General Public License
+ * ===================================================================
  *
- * -------------------------------------------------------------------
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -14,109 +11,82 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program.
- * -------------------------------------------------------------------
- */
-
-
-/**
- * Mock.js is a Javascript resource library that allows the user to
- * 'fake' certain Javascript objects in order to test their functionality
- * properly by assessing the flow a Javascript function execution
+ * ===================================================================
  *
- * @author Chris Brand
- * @date 2012-11-24
- * @license GNU General Public License
+ * Mock.js is a lightweigth Javascript Mock Library for testing. It creates
+ * easy spies to "spy" on method called and report back.
+ * 
+ * @package Mock.js
+ * @author  Chris Brand <chris@cainsvault.com>
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
  */
+ 
 (function()
-{   
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent, functions) 
-    { 
-        for (var key in parent) 
-        { 
-            if (__hasProp.call(parent, key) && functions.indexOf(key) > -1 && typeof parent[key] == 'function') 
-            {
-                child[key] = parent[key];
-            }
-        }
+{       
+    Mock = {};
 
-        return child; 
-    };
-
-    /**
-     * MockedReplica is a javascript object containing
-     * our basic 'mock' test calls.
-     */
-    MockedReplica = {
-        mock_called_methods: {},
-        mock_called: function(method)
-        {
-            return this.mock_called_methods[method].called;
-        },
-        mock_called_with: function(method)
-        {
-            return this.mock_called_methods[method].args;
-        },
-    };
-
-    Mock = (function()
+    Mock.Spy = (function()
     {
-        function Mock(mock, functions)
+        function Spy(obj, method)
         {
-            if (!(this instanceof Mock)) 
+            if (!(this instanceof Spy)) 
             {
-                return new Mock(mock, functions);
+                return new Spy(obj, method);
             }
 
-            MockedReplica = __extends(MockedReplica, mock, functions);
+            var context = this;
+            this.track = {};
+            this.track.callCount = 0;
+            this.track.calledWith = [];
+            this.track.returnedWith = null;
 
-            /**
-             * Override the replica and intercept
-             * function calls
-             *
-             * @todo remove jquery dependency
-             */
-            $.each(MockedReplica, function(key, value) 
-            { 
-               
-                if (__hasProp.call(MockedReplica, key) && functions.indexOf(key) > -1 && typeof MockedReplica[key] == 'function')
+
+            // the original function call
+            var function_cont = obj[method];
+            
+            if (typeof function_cont == "undefined")
+            {
+                throw "unable to mock method '" + method + "'.";
+            }
+
+            // spy on the object
+            obj[method] = function()
+            {   
+                /* increase called count */
+                context.track.callCount++;
+
+                /* save arguments used for this function call */
+                for (var i = 0; i < arguments.length; i++)
                 {
-                    MockedReplica.mock_called_methods[key] = {called: 0, args: []};
-
-                    var function_cont = MockedReplica[key]; // the original function call
-
-                    /* override the function call */
-                    MockedReplica[key] = function()
-                    {
-                        MockedReplica.mock_called_methods[key].called++;
-
-                        /* save arguments used for this function call */
-                        $.each(arguments, function(arg_key, arg_value) 
-                        { 
-                            switch(typeof arg_value)
-                            {
-                                case 'function':
-                                    MockedReplica.mock_called_methods[key].args.push('function');
-                                    break;
-                                case 'object':
-                                    MockedReplica.mock_called_methods[key].args.push('object');
-                                    break;
-                                default:
-                                    MockedReplica.mock_called_methods[key].args.push(arg_value);
-                            }
-                        });
-
-                        return function_cont.apply(MockedReplica, arguments);
-                    };
+                    context.track.calledWith.push(arguments[i]);
                 }
-            });
 
-            return MockedReplica; // return a replica
+                /* save the response of the method */
+                context.track.returnedWith = function_cont.apply(obj, arguments)
+
+                return context.track.returnedWith; 
+            };
+
+            // returns the amount of times the method was called
+            this.called = function()
+            {
+                return context.track.callCount;
+            }
+
+            // returns the arguments the method was called with
+            this.calledWith = function()
+            {
+                return context.track.calledWith;
+            }
+
+            // returns the response of the method
+            this.returnedWith = function()
+            {
+                return context.track.returnedWith;
+            }
         }
 
-        return Mock;
+        return Spy;
     })();
 
 }).call(this);
