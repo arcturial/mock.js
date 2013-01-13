@@ -34,7 +34,7 @@ var suite = vows.describe('Mock.js');
 
 // Test basic spy functionality
 suite.addBatch({
-	'Create a method spy': {
+	"Create a method spy": {
 		topic: function() {
 
 			var arr = new Array();
@@ -67,7 +67,7 @@ suite.addBatch({
 
 // Test spy on methods not directly part of the flow
 suite.addBatch({
-	'Spy on indirect method execution': {
+	"Spy on indirect method execution": {
 		topic: function() {
 
 			function TestObject()
@@ -90,12 +90,69 @@ suite.addBatch({
 
 			return mock;
 		},
-		"methodTwo() called once": {
+		"methodTwo() called": {
 			"Called once": function(topic) {
 				assert.equal(topic.called(), 1);
 			},
 			"Method result = 'done'": function(topic) {
 				assert.equal(topic.returnedWith(), 'done');
+			}
+		}
+	}
+});
+
+// Test spy consume() abilities. This overrides default method behaviour
+suite.addBatch({
+	"Spy on global method Math.random()": {
+		topic: function() {
+
+			var spy = Mock.Spy(Math, "random");
+
+			return spy;
+		},
+		"Math.random() called": {
+			"Called once": function(topic) {
+				Math.random();
+				assert.equal(topic.called(), 1);
+			},
+			"Called with specified result": function(topic) {
+				topic.consume(10);
+				Math.random();
+				assert.equal(topic.returnedWith(), 10);
+			},
+			"Called with correct result after release": function(topic) {
+				topic.release();
+				var result = Math.random();
+				assert.notEqual(result, topic.returnedWith);
+			}
+		}
+	}
+});
+
+// Test spy event trigger and listeners
+suite.addBatch({
+	"Test event listeners": {
+		topic: function()
+		{
+			var testGlobals = {"triggered": false};
+
+			return testGlobals;
+		},
+		"Add and trigger a 'create' event": {
+			"Add 'created' event listener": function(topic) {
+				
+				Mock.created(function(spy)
+				{
+					topic.triggered = true;	
+				});
+
+				assert.ok(true);
+			},
+			"Trigger 'created' event'": function(topic) {
+
+				var spy = Mock.Spy(Math, "random");
+
+				assert.equal(topic.triggered, true);
 			}
 		}
 	}

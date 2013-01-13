@@ -23,7 +23,24 @@
  
 (function()
 {       
-    Mock = {};
+    Mock = {
+        listeners: [],
+        trigger: function(event, spy)
+        {
+            for (var i = 0; i < this.listeners.length; i++)
+            {
+                if (this.listeners[i].label == event)
+                {
+                    /* call listener */
+                    this.listeners[i].func(spy);
+                }
+            }
+        },
+        created: function(callback)
+        {
+            this.listeners.push({"label": "created", "func": callback});
+        }
+    };
 
     Mock.Spy = (function()
     {
@@ -35,21 +52,25 @@
             }
 
             var context = this;
+
             this.track = {};
             this.track.callCount = 0;
             this.track.calledWith = [];
             this.track.returnedWith = null;
 
+            this.consume = {};
+            this.consume.consume = false;
+            this.consume.result = true;
 
-            // the original function call
-            var function_cont = obj[method];
+            /* the original function call */
+            this.function_cont = obj[method];
             
-            if (typeof function_cont == "undefined")
+            if (typeof context.function_cont == "undefined")
             {
                 throw "unable to mock method '" + method + "'.";
             }
 
-            // spy on the object
+            /* spy on the object */
             obj[method] = function()
             {   
                 /* increase called count */
@@ -62,7 +83,16 @@
                 }
 
                 /* save the response of the method */
-                context.track.returnedWith = function_cont.apply(obj, arguments)
+                if (context.consume.consume) 
+                {
+                    /* returned mock result, ignore original execution */
+                    context.track.returnedWith = context.consume.result;
+                }
+                else 
+                {
+                    /* call original execution */
+                    context.track.returnedWith = context.function_cont.apply(obj, arguments);
+                }
 
                 return context.track.returnedWith; 
             };
@@ -84,8 +114,30 @@
             {
                 return context.track.returnedWith;
             }
+
+            // consumes the original method, stopping it from executing 
+            this.consume = function(result)
+            {
+                context.consume.consume = true;
+                context.consume.result = result;
+
+                return context;
+            }
+
+            // release any mocked consumptions and return method original states
+            this.release = function()
+            {
+                obj[method] = context.function_cont;
+
+                return context;
+            }
+            
+            /* trigger created event */
+            Mock.trigger('created', context);
         }
 
         return Spy;
+    
     })();
+
 }).call(this);
