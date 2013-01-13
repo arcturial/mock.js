@@ -16,6 +16,9 @@
 
         <!-- Mock.js -->
         <script type="text/javascript" src="../src/mock.js"></script>
+
+        <!-- Mock.js QUnit Helper -->
+        <script type="text/javascript" src="../src/mock-qunit.js"></script>
     </head>
     <body>
 
@@ -23,8 +26,13 @@
         <div id="qunit-fixture"></div>        
 
         <script>
-        
-            test( "test function callMe()", function() {
+            
+            Mock.created(function()
+                {
+                    alert("mock created!");
+                });
+
+            test("test function callMe()", function() {
 
                 expect(4); // expect three assertions
 
@@ -69,6 +77,34 @@
 
                 /* call deepEqual when comparing arguments */
                 deepEqual(callMeTwo.calledWith(), ['arg1', 'arg2'], "callMeTwo() last called with param [arg1, arg2]");
+            });
+
+            test("test mocked ajax calls", function() {
+
+                var spy = Mock.Spy(jQuery, "ajax");
+                spy.consume("my result");
+
+                jQuery.ajax({
+                    url: "example.js"
+                });
+                
+                equal(spy.called(), 1, "jQuery.ajax called once");
+                equal(spy.returnedWith(), "my result", "jQuery.ajax returned the result specified");
+            });
+
+
+            asyncTest("test normal ajax calls ", function() {
+
+                expect(1);
+
+                /* this proves the mock has been release */
+                jQuery.ajax({
+                    url: "example.js"
+                }).done(function() {   
+                    /* ajax request done */
+                    ok(true, "jQuery.ajax completed request successfully");
+                    start();
+                });
             });
 
         </script>
