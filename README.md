@@ -24,7 +24,7 @@ Table of Contents
 
 Mock.js hooks into an object like a spy and monitors certain assertions on the method:
 
-` var mocked = Mock(new Object, 'method1'); `
+` var mocked = Mock.Spy(new Object, 'method1'); `
 
 This will create a spy on the 'Object' class for 'method1'.
 
@@ -38,7 +38,7 @@ We start out by creating our mocked object and methods and then calling the spec
 
 ` var object = new Object() `
 
-` var mocked = Mock(object, 'method1'); `
+` var mocked = Mock.Spy(object, 'method1'); `
 
 ` object.method1() `
 
@@ -57,7 +57,7 @@ Again, we create our mocked object.
 
 ` var object = new Object() `
 
-` var mocked = Mock(object, 'method1'); `
+` var mocked = Mock.Spy(object, 'method1'); `
 
 But this time, we call 'method1' with some arguments.
 
@@ -80,7 +80,7 @@ Again, we create our mocked object...but this time we give the method a response
 
 ` object.method1 = function() { return 'hello'; } `
 
-` var mocked = Mock(object, 'method1'); `
+` var mocked = Mock.Spy(object, 'method1'); `
 
 Let's call the method and see if returned what it should.
 
