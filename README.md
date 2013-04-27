@@ -151,7 +151,7 @@ This will fail, since the result you specified for jQuery.ajax is no longer an i
 
 ` jQuery.ajax({"url": "example.js"}).done(function() { alert("done"); }); `
 
-Spies are automatically released in QUnit tests if you include the ` mock-qunit.js` helper. The release occures at the end of every test.
+Spies are automatically released in QUnit tests.
 
 
 7. Integration with a UnitTest Framework

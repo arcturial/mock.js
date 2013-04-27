@@ -140,4 +140,34 @@
     
     })();
 
+
+
+    // Logic to release mocks after QUnit test case.
+    if (typeof QUnit !== 'undefined')
+    {
+        MockQUnit = {};
+        MockQUnit.spies = [];
+
+        Mock.created(function(spy)
+        {
+            /* add spy to the test tracker once created */
+            MockQUnit.spies.push(spy);
+        });
+
+        QUnit.testStart(function()
+        {
+            /* reset test tracker */
+            MockQUnit.spies = [];
+        });
+
+        QUnit.testDone(function()
+        {
+            /* release all spies */
+            for (var i = 0; i < MockQUnit.spies.length; i++)
+            {
+                MockQUnit.spies[i].release();
+            }
+        });
+    }
+
 }).call(this);
