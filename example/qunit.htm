@@ -76,7 +76,9 @@
                 deepEqual(callMeTwo.calledWith(), ['arg1', 'arg2'], "callMeTwo() last called with param [arg1, arg2]");
             });
 
-            test("test mocked ajax calls", function() {
+            test("test mocked sync ajax calls", function() {
+
+                // Sync example
 
                 var spy = Mock.Spy(jQuery, "ajax");
                 spy.consume("my result");
@@ -87,6 +89,9 @@
                 
                 equal(spy.called(), 1, "jQuery.ajax called once");
                 equal(spy.returnedWith(), "my result", "jQuery.ajax returned the result specified");
+
+                // Release mock,s ince it's mocking the global jQuery.ajax
+                spy.release();
             });
 
 
