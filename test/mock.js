@@ -131,14 +131,14 @@ suite.addBatch({
 
 // Test spy consumeWithFake() abilities. This overrides default method behaviour with a method
 suite.addBatch({
-	"Spy on global method Math.random()": {
+	"Spy on global method Math.ceil()": {
 		topic: function() {
 
 			var spy = Mock.Spy(Math, "ceil");
 
 			return spy;
 		},
-		"Math.random() called": {
+		"Math.ceil() called": {
 			"Called once": function(topic) {
 				Math.ceil();
 				assert.equal(topic.called(), 1);
