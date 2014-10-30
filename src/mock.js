@@ -13,7 +13,7 @@
  *
  * ===================================================================
  *
- * Mock.js is a lightweigth Javascript Mock Library for testing. It creates
+ * Mock.js is a lightweight Javascript Mock Library for testing. It creates
  * easy spies to "spy" on method called and report back.
  * 
  * @package Mock.js
@@ -61,6 +61,7 @@
             this.consume = {};
             this.consume.consume = false;
             this.consume.result = true;
+            this.consume.resultFake = null;
 
             /* the original function call */
             this.function_cont = obj[method];
@@ -86,7 +87,11 @@
                 if (context.consume.consume) 
                 {
                     /* returned mock result, ignore original execution */
-                    context.track.returnedWith = context.consume.result;
+                    if (typeof context.consume.resultFake === 'function') {
+                        context.track.returnedWith = context.consume.resultFake.apply(obj, arguments);
+                    } else {
+                        context.track.returnedWith = context.consume.result;
+                    }
                 }
                 else 
                 {
@@ -123,6 +128,13 @@
 
                 return context;
             }
+
+            this.consumeWithFake = function(fake) {
+                context.consume.consume = true;
+                context.consume.resultFake = fake;
+
+                return context;
+            };
 
             // release any mocked consumptions and return method original states
             this.release = function()
