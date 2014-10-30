@@ -129,6 +129,36 @@ suite.addBatch({
 	}
 });
 
+// Test spy consumeWithFake() abilities. This overrides default method behaviour with a method
+suite.addBatch({
+	"Spy on global method Math.random()": {
+		topic: function() {
+
+			var spy = Mock.Spy(Math, "ceil");
+
+			return spy;
+		},
+		"Math.random() called": {
+			"Called once": function(topic) {
+				Math.ceil();
+				assert.equal(topic.called(), 1);
+			},
+			"Called with specified fake method": function(topic) {
+				topic.consumeWithFake(function(num) {
+					return num + 3;
+				});
+				Math.ceil(4.5);
+				assert.equal(topic.returnedWith(), 7.5);
+			},
+			"Called with correct result after release": function(topic) {
+				topic.release();
+				var result = Math.ceil(4.5);
+				assert.notEqual(result, topic.returnedWith);
+			}
+		}
+	}
+});
+
 // Test spy event trigger and listeners
 suite.addBatch({
 	"Test event listeners": {
