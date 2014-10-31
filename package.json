@@ -1,6 +1,6 @@
 {
     "name": "mock.js",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Lightweight Mock Object Testing For Javascript.",
     "author": {
         "name": "Chris Brand",

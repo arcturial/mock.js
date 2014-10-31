@@ -144,7 +144,24 @@ alert(spy.returnedWith());
 Calling consume(result) means that a method will now return the specified result instead of completing it's normal flow. In this case,
 the method was called once and it returnedWith 'ajax result' instead of trying to load `example.js`.
 
-NOTE: Unforuntanely using `consume` only works on synchronous ajax request for now.
+There are some cases where returning a predefined mock result isn't the best way to write your test.  In these scenarios, you can use consumeWithFake() instead to pass an executable method into the spy.
+
+```javascript
+var spy = Mock.Spy(jQuery, "ajax");
+
+spy.consumeWithFake(function (opts) {
+  // do something with opts, then return a result
+});
+
+jQuery.ajax({"url": "example.js"});
+
+alert(spy.called());
+
+alert(spy.returnedWith());
+
+Calling consumeWithFake() means that the method's arguments will now be passed to the mocked method, and returnedWith() will be that method's return value.
+
+NOTE: Unfortunately using `consume/consumeWithFake` only works on synchronous ajax request for now.
 
 6. Releasing Mocks
 ------------------
