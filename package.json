@@ -1,7 +1,7 @@
 {
-    "name": "Mock.js",
+    "name": "mock.js",
     "version": "0.1.0",
-    "description": "Lightweight Mock Testing For Javascript.",
+    "description": "Lightweight Mock Object Testing For Javascript.",
     "author": {
         "name": "Chris Brand",
         "email": "chris@cainsvault.com"
